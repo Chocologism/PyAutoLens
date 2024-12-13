@@ -143,7 +143,7 @@ class PlotterInterface(AgPlotterInterface):
                 magnification=True,
             )
 
-    def image_with_positions(self, image: aa.Array2D, positions: aa.Grid2DIrregular):
+    def image_with_positions(self, image: aa.Array2D, positions: aa.Grid2DIrregular, filename="image_with_positions"):
         """
         Visualizes the positions of a model-fit, where these positions are used to resample lens models where
         the positions to do trace within an input threshold of one another in the source-plane.
@@ -178,6 +178,6 @@ class PlotterInterface(AgPlotterInterface):
                 include_2d=self.include_2d,
                 visuals_2d=visuals_2d,
             )
-            image_plotter.set_filename("image_with_positions")
+            image_plotter.set_filename(filename=filename)
             if should_plot("image_with_positions"):
                 image_plotter.figure_2d()

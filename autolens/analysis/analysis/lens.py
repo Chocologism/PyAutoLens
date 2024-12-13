@@ -1,6 +1,6 @@
 import logging
 import numpy as np
-from typing import Dict, Optional, Union
+from typing import Dict, Optional, Union, List
 
 import autofit as af
 import autoarray as aa
@@ -22,9 +22,7 @@ logger.setLevel(level="INFO")
 class AnalysisLens:
     def __init__(
         self,
-        positions_likelihood: Optional[
-            Union[PositionsLHResample, PositionsLHPenalty]
-        ] = None,
+        positions_likelihood: Optional[ Union[PositionsLHResample, PositionsLHPenalty, List[Union[PositionsLHResample, PositionsLHPenalty]]] ] = None,
         cosmology: ag.cosmo.LensingCosmology = ag.cosmo.Planck15(),
     ):
         """
@@ -118,8 +116,27 @@ class AnalysisLens:
         """
         if self.positions_likelihood is not None:
             try:
-                return self.positions_likelihood.log_likelihood_function_positions_overwrite(
-                    instance=instance, analysis=self
-                )
+                if not isinstance(self.positions_likelihood,list):
+                    return self.positions_likelihood.log_likelihood_function_positions_overwrite(
+                        instance=instance, analysis=self
+                    )
+                else:
+                    log_likelihood_penalty_base = self.positions_likelihood[0].log_likelihood_penalty_base_from(self.dataset)
+                    total_penalty = 0.0
+                    for positions_likelihood_one in self.positions_likelihood:
+                        tracer = self.tracer_via_instance_from(instance=instance)
+                        if not tracer.has(cls=ag.mp.MassProfile) or len(tracer.planes) == 1:
+                            return
+                        log_likelihood_positions_penalty = positions_likelihood_one.log_likelihood_penalty_from(
+                            tracer=tracer
+                        )
+                        if log_likelihood_positions_penalty is not None:
+                            total_penalty += log_likelihood_positions_penalty
+                    if total_penalty == 0.0:
+                        return None
+                    else:
+                        return log_likelihood_penalty_base - total_penalty
+
+
             except (ValueError, np.linalg.LinAlgError) as e:
                 raise exc.FitException from e

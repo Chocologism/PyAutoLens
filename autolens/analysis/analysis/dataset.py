@@ -1,6 +1,6 @@
 import os
 import logging
-from typing import Optional, Union
+from typing import Optional, Union, List
 
 from autoconf import conf
 from autoconf.dictable import to_dict, output_to_json
@@ -29,9 +29,7 @@ class AnalysisDataset(AgAnalysisDataset, AnalysisLens):
     def __init__(
         self,
         dataset,
-        positions_likelihood: Optional[
-            Union[PositionsLHResample, PositionsLHPenalty]
-        ] = None,
+        positions_likelihood: Optional[ Union[PositionsLHResample, PositionsLHPenalty, List[Union[PositionsLHResample, PositionsLHPenalty]]] ] = None,
         adapt_image_maker: Optional[ag.AdaptImageMaker] = None,
         cosmology: ag.cosmo.LensingCosmology = ag.cosmo.Planck15(),
         settings_inversion: aa.SettingsInversion = None,

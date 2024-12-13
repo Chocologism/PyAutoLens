@@ -34,10 +34,19 @@ class VisualizerImaging(af.Visualizer):
         plotter_interface.imaging(dataset=analysis.dataset)
 
         if analysis.positions_likelihood is not None:
-            plotter_interface.image_with_positions(
-                image=analysis.dataset.data,
-                positions=analysis.positions_likelihood.positions,
-            )
+            if not isinstance(analysis.positions_likelihood,list):
+                plotter_interface.image_with_positions(
+                    image=analysis.dataset.data,
+                    positions=analysis.positions_likelihood.positions,
+                )
+            else:
+                for i, positions_likelihood_one in enumerate(analysis.positions_likelihood):
+                    plotter_interface.image_with_positions(
+                        image=analysis.dataset.data,
+                        positions=positions_likelihood_one.positions,
+                        filename="image_with_positions_"+str(i)
+                    )
+
 
         if analysis.adapt_images is not None:
             plotter_interface.adapt_images(
@@ -84,9 +93,16 @@ class VisualizerImaging(af.Visualizer):
         fit = analysis.fit_from(instance=instance)
 
         if analysis.positions_likelihood is not None:
-            analysis.positions_likelihood.output_positions_info(
-                output_path=paths.output_path, tracer=fit.tracer
-            )
+            if not isinstance(analysis.positions_likelihood,list):
+                analysis.positions_likelihood.output_positions_info(
+                    output_path=paths.output_path, tracer=fit.tracer
+                )
+            else:
+                for i, positions_likelihood_one in enumerate(analysis.positions_likelihood):
+                    positions_likelihood_one.output_positions_info(
+                        output_path=paths.output_path, tracer=fit.tracer,
+                        filename = "positions_" + str(i) + ".info"
+                    )
 
         if fit.inversion is not None:
             try:

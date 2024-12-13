@@ -57,7 +57,7 @@ class AbstractPositionsLH:
     ) -> Optional[float]:
         raise NotImplementedError
 
-    def output_positions_info(self, output_path: str, tracer: Tracer):
+    def output_positions_info(self, output_path: str, tracer: Tracer, filename="positions.info"):
         """
         Outputs a `positions.info` file which summarizes the positions penalty term for a model fit, including:
 
@@ -83,7 +83,7 @@ class AbstractPositionsLH:
             coordinate=(0.0, 0.0)
         )
 
-        with open_(path.join(output_path, "positions.info"), "w+") as f:
+        with open_(path.join(output_path, filename), "w+") as f:
             f.write(f"Positions: \n {self.positions} \n\n")
             f.write(f"Radial Distance from (0.0, 0.0): \n {distances} \n\n")
             f.write(f"Threshold = {self.threshold} \n")
@@ -270,6 +270,8 @@ class PositionsLHPenalty(AbstractPositionsLH):
             return self.log_likelihood_penalty_factor * (
                 positions_fit.max_separation_of_source_plane_positions - self.threshold
             )
+        # 即，如果max_separation_within_threshold=True，就不执行，那函数返回None
+        # 如果max_separation_within_threshold=False，就执行，函数返回penalty
 
     def log_likelihood_function_positions_overwrite(
         self, instance: af.ModelInstance, analysis: AnalysisDataset
@@ -297,9 +299,11 @@ class PositionsLHPenalty(AbstractPositionsLH):
 
         if log_likelihood_positions_penalty is None:
             return None
+        # 如果是None，说明前面判断结果，max_separation_within_threshold=True
 
         log_likelihood_penalty_base = self.log_likelihood_penalty_base_from(
             dataset=analysis.dataset
         )
 
         return log_likelihood_penalty_base - log_likelihood_positions_penalty
+    

@@ -219,12 +219,19 @@ class AnalysisImaging(AnalysisDataset):
         analysis.save_attributes(paths=paths)
 
         if self.positions_likelihood is not None:
-
-            paths.save_json(
-                name="positions",
-                object_dict=to_dict(self.positions_likelihood.positions),
-                prefix="dataset",
-            )
+            if not isinstance(self.positions_likelihood,list):
+                paths.save_json(
+                    name="positions",
+                    object_dict=to_dict(self.positions_likelihood.positions),
+                    prefix="dataset",
+                )
+            else:
+                for i, positions_likelihood_one in enumerate(self.positions_likelihood):
+                    paths.save_json(
+                        name="positions_"+str(i),
+                        object_dict=to_dict(positions_likelihood_one.positions),
+                        prefix="dataset",
+                    )
 
     def profile_log_likelihood_function(
         self, instance: af.ModelInstance, paths: Optional[af.DirectoryPaths] = None
