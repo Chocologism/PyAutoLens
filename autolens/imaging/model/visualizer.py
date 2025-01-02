@@ -187,6 +187,7 @@ class VisualizerImaging(af.Visualizer):
             The model object, which includes model components representing the galaxies that are fitted to
             the imaging data.
         """
+        return #暂时禁用这里的可视化
         if analyses is None:
             return
 

@@ -2,6 +2,10 @@ import autofit as af
 import autogalaxy as ag
 
 from autolens.point.model.plotter_interface import PlotterInterfacePoint
+from autolens import Tracer
+from autogalaxy.profiles.light.linear import (
+    LightProfileLinear,
+)
 
 
 class VisualizerPoint(af.Visualizer):
@@ -66,6 +70,22 @@ class VisualizerPoint(af.Visualizer):
             which may change which images are output.
         """
         fit = analysis.fit_from(instance=instance)
+        # fit = fit.tracer_linear_light_profiles_to_light_profiles() #try to fix the bug, bug dataset is PointDataset
+        # for name, galaxy in fit.tracer.galaxies.items():
+        #     print(name)
+        if fit.tracer.has(cls=LightProfileLinear):
+            tracer = Tracer(
+                galaxies=af.Collection(
+                    {
+                        name: galaxy
+                        for name, galaxy in fit.tracer.galaxies.items()
+                        if not galaxy.has(cls=LightProfileLinear)
+                    }
+                )
+            )
+            fit.tracer = tracer
+        # for name, galaxy in fit.tracer.galaxies.items():
+        #     print(name)
 
         plotter_interface = PlotterInterfacePoint(
             image_path=paths.image_path, title_prefix=analysis.title_prefix
