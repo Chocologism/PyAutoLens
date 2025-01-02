@@ -48,17 +48,14 @@ class FitPointDataset:
         # except exc.PointExtractionException:
         #     self.positions = None
         if self.fit_positions_cls is FitPositionsSourceFast:
-            try:
-                self.positions = self.fit_positions_cls(
-                    name=dataset.name,
-                    data=dataset.positions,
-                    noise_map=dataset.positions_noise_map,
-                    tracer=tracer,
-                    solver=None,
-                    profile=None,
-                )
-            except exc.PointExtractionException:
-                self.positions = None
+            self.positions = self.fit_positions_cls(
+                name=dataset.name,
+                data=dataset.positions,
+                noise_map=dataset.positions_noise_map,
+                tracer=tracer,
+                solver=None,
+                profile=profile,
+            )
         else:
             try:
                 self.positions = self.fit_positions_cls(
