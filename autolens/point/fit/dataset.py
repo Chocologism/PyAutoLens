@@ -7,7 +7,7 @@ from autolens.point.fit.fluxes import FitFluxes
 from autolens.lens.tracer import Tracer
 
 from autolens.point.fit.positions.image.pair import FitPositionsImagePair
-from autolens.point.fit.positions.source.separations import FitPositionsSourceFast
+from autolens.point.fit.positions.source.separations import FitPositionsSourceFast, FitPositionsSourceFastWeighted, FitPositionsSourceFastReduced
 from autolens import exc
 
 try:
@@ -26,6 +26,7 @@ class FitPointDataset:
         solver: PointSolver,
         fit_positions_cls=FitPositionsImagePair,
         run_time_dict: Optional[Dict] = None,
+        setting_for_source_plane_Chi2 : dict = None,
     ):
         self.dataset = dataset
         self.tracer = tracer
@@ -55,6 +56,28 @@ class FitPointDataset:
                 tracer=tracer,
                 solver=None,
                 profile=profile,
+                scale = setting_for_source_plane_Chi2['scale']
+            )
+        elif self.fit_positions_cls is FitPositionsSourceFastWeighted:
+            self.positions = self.fit_positions_cls(
+                name=dataset.name,
+                data=dataset.positions,
+                noise_map=dataset.positions_noise_map,
+                tracer=tracer,
+                solver=None,
+                profile=profile,
+                scale = setting_for_source_plane_Chi2['scale'],
+                weight = setting_for_source_plane_Chi2['weight']
+            )
+        elif self.fit_positions_cls is FitPositionsSourceFastReduced:
+            self.positions = self.fit_positions_cls(
+                name=dataset.name,
+                data=dataset.positions,
+                noise_map=dataset.positions_noise_map,
+                tracer=tracer,
+                solver=None,
+                profile=profile,
+                scale = setting_for_source_plane_Chi2['scale']
             )
         else:
             try:
