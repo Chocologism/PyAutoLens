@@ -98,7 +98,9 @@ from .analysis.positions import PositionsLHPenalty
 from .analysis.preloads import Preloads
 from .imaging.simulator import SimulatorImaging
 from .imaging.fit_imaging import FitImaging
+from .imaging.fit_imaging import FitImagingReducedChi
 from .imaging.model.analysis import AnalysisImaging
+from .imaging.model.analysis import AnalysisImagingReducedChi
 from .interferometer.simulator import SimulatorInterferometer
 from .interferometer.fit_interferometer import FitInterferometer
 from .interferometer.model.analysis import AnalysisInterferometer
@@ -111,6 +113,7 @@ from .point.fit.positions.image.pair_all import FitPositionsImagePairAll
 from .point.fit.positions.image.pair_repeat import FitPositionsImagePairRepeat
 from .point.fit.positions.source.separations import FitPositionsSource
 from .point.fit.positions.source.separations import FitPositionsSourceFast
+from .point.fit.positions.source.separations import FitPositionsSourceFastReduced
 from .point.fit.positions.source.max_separation import FitPositionsSourceMaxSeparation
 from .point.model.analysis import AnalysisPoint
 from .point.solver import PointSolver
