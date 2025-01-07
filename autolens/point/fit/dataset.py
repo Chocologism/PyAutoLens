@@ -7,6 +7,7 @@ from autolens.point.fit.fluxes import FitFluxes
 from autolens.lens.tracer import Tracer
 
 from autolens.point.fit.positions.image.pair import FitPositionsImagePair
+from autolens.point.fit.positions.source.separations import FitPositionsSourceFast
 from autolens import exc
 
 try:
@@ -35,17 +36,41 @@ class FitPointDataset:
 
         self.fit_positions_cls = fit_positions_cls
 
-        try:
-            self.positions = self.fit_positions_cls(
-                name=dataset.name,
-                data=dataset.positions,
-                noise_map=dataset.positions_noise_map,
-                tracer=tracer,
-                solver=solver,
-                profile=profile,
-            )
-        except exc.PointExtractionException:
-            self.positions = None
+        # try:
+        #     self.positions = self.fit_positions_cls(
+        #         name=dataset.name,
+        #         data=dataset.positions,
+        #         noise_map=dataset.positions_noise_map,
+        #         tracer=tracer,
+        #         solver=solver,
+        #         profile=profile,
+        #     )
+        # except exc.PointExtractionException:
+        #     self.positions = None
+        if self.fit_positions_cls is FitPositionsSourceFast:
+            try:
+                self.positions = self.fit_positions_cls(
+                    name=dataset.name,
+                    data=dataset.positions,
+                    noise_map=dataset.positions_noise_map,
+                    tracer=tracer,
+                    solver=None,
+                    profile=None,
+                )
+            except exc.PointExtractionException:
+                self.positions = None
+        else:
+            try:
+                self.positions = self.fit_positions_cls(
+                    name=dataset.name,
+                    data=dataset.positions,
+                    noise_map=dataset.positions_noise_map,
+                    tracer=tracer,
+                    solver=solver,
+                    profile=profile,
+                )
+            except exc.PointExtractionException:
+                self.positions = None
 
         try:
             self.flux = FitFluxes(

@@ -2,6 +2,7 @@ import autogalaxy.plot as aplt
 
 from autolens.plot.abstract_plotters import Plotter
 from autolens.point.fit.dataset import FitPointDataset
+from autolens.point.fit.positions.source.separations import FitPositionsSourceFast
 
 
 class FitPointDatasetPlotter(Plotter):
@@ -33,6 +34,10 @@ class FitPointDatasetPlotter(Plotter):
         return self.visuals_2d
 
     def figures_2d(self, positions: bool = False, fluxes: bool = False):
+        # print(self.fit.fit_positions_cls)
+        # print(issubclass(self.fit.fit_positions_cls,FitPositionsSourceFast))
+        if issubclass(self.fit.fit_positions_cls,FitPositionsSourceFast):
+            return None
         if positions:
             visuals_2d = self.get_visuals_2d()
 
