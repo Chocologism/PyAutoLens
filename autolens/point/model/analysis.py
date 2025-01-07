@@ -35,6 +35,7 @@ class AnalysisPoint(AgAnalysis, AnalysisLens):
         image=None,
         cosmology: ag.cosmo.LensingCosmology = ag.cosmo.Planck15(),
         title_prefix: str = None,
+        setting_for_source_plane_Chi2 : dict = None,
     ):
         """
         The analysis performed for model-fitting a point-source dataset, for example fitting the point-sources of a
@@ -69,6 +70,7 @@ class AnalysisPoint(AgAnalysis, AnalysisLens):
         self.solver = solver
         self.fit_positions_cls = fit_positions_cls
         self.title_prefix = title_prefix
+        self.setting_for_source_plane_Chi2 = setting_for_source_plane_Chi2
 
     def log_likelihood_function(self, instance):
         """
@@ -103,6 +105,7 @@ class AnalysisPoint(AgAnalysis, AnalysisLens):
             solver=self.solver,
             fit_positions_cls=self.fit_positions_cls,
             run_time_dict=run_time_dict,
+            setting_for_source_plane_Chi2=self.setting_for_source_plane_Chi2
         )
 
     def save_attributes(self, paths: af.DirectoryPaths):
