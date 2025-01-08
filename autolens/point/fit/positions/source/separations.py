@@ -7,7 +7,7 @@ from autolens.lens.tracer import Tracer
 from autolens.point.fit.positions.abstract import AbstractFitPositions
 from autolens.point.solver import PointSolver
 
-# from autoarray.fit import fit_util
+from autoarray.fit import fit_util
 from typing import Optional, Tuple
 import numpy as np
 
@@ -221,12 +221,31 @@ class FitPositionsSourceFastWeighted(AbstractFitPositions):
     def sqrt_magnification_map(self) -> np.ndarray:
         return np.sqrt(self.abs_magnification_map)
     
-    @property
-    def sqrt_weight(self) -> float:
-        return np.sqrt(self.weight)
+    # @property
+    # def sqrt_weight(self) -> float:
+    #     return np.sqrt(self.weight)
+    # @property
+    # def noise_map(self):
+    #     return self._noise_map / self.sqrt_magnification_map / self.sqrt_weight
+    
     @property
     def noise_map(self):
-        return self._noise_map / self.sqrt_magnification_map / self.sqrt_weight
+        return self._noise_map / self.sqrt_magnification_map
+    
+    @property
+    def log_likelihood(self) -> float:
+        """
+        Returns the log likelihood of each model data point's fit to the dataset, where:
+
+        Log Likelihood = -0.5*[Chi_Squared_Term + Noise_Term] (see functions above for these definitions)
+        """
+        # print(self.weight)
+        # print(fit_util.log_likelihood_from(
+        #     chi_squared=self.weight * self.chi_squared, noise_normalization=self.weight * self.noise_normalization
+        # ))
+        return fit_util.log_likelihood_from(
+            chi_squared=self.weight * self.chi_squared, noise_normalization=self.weight * self.noise_normalization
+        )
 
 class FitPositionsSourceFastReduced(AbstractFitPositions):
     def __init__(
